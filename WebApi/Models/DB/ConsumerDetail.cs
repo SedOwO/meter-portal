@@ -28,7 +28,5 @@ namespace WebApi.Models.DB
         public string? Phone { get; set; }
 
         public string? Address { get; set; }
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

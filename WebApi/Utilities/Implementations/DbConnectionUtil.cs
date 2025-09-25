@@ -13,7 +13,7 @@ namespace WebApi.Utilities.Implementations
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         }
 
-        public async Task<NpgsqlDataReader> ExecuteReaderAsync(string query, Dictionary<string, object> parameters = null)
+        public async Task<NpgsqlDataReader> ExecuteReaderAsync(string query, Dictionary<string, object>? parameters = null)
         {
             var conn = new NpgsqlConnection(_connectionString);
             await conn.OpenAsync();
@@ -31,7 +31,7 @@ namespace WebApi.Utilities.Implementations
             return await cmd.ExecuteReaderAsync();
         }
 
-        public async Task<T?> ExecuteScalarAsync<T>(string query, Dictionary<string, object> parameters = null)
+        public async Task<T?> ExecuteScalarAsync<T>(string query, Dictionary<string, object>? parameters = null)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             await conn.OpenAsync();
@@ -46,7 +46,7 @@ namespace WebApi.Utilities.Implementations
                 }
             }
             var result = await cmd.ExecuteScalarAsync();
-            return result != DBNull.Value ? (T)result : default;
+            return result != DBNull.Value && result != null ? (T)result : default;
         }
     }
 }

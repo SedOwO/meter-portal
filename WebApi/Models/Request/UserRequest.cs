@@ -14,7 +14,5 @@ namespace WebApi.Models.Request
         [Required]
         [StringLength(20, ErrorMessage = "Role cannot exceed 20 characters.")]
         public string Role { get; set; } = "Consumer";
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
