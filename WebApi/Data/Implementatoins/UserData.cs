@@ -110,6 +110,36 @@ namespace WebApi.Data.Implementatoins
             }
         }
 
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "username", username }
+                };
+
+                using var reader = await _db.ExecuteReaderAsync("query here", parameters);
+
+                if (await reader.ReadAsync())
+                {
+                    return new User
+                    {
+                        UserId = reader.GetInt32(reader.GetOrdinal("userid")),
+                        Username = reader.GetString(reader.GetOrdinal("username")),
+                        Role = reader.GetString(reader.GetOrdinal("role"))
+                    };
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<bool> UpdateUserAsync(int userId, UserRequest user)
         {
             try
