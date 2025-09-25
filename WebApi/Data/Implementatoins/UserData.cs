@@ -80,7 +80,7 @@ namespace WebApi.Data.Implementatoins
             }
         }
 
-        public async Task<User> GetUserByIdAsync(int userId)
+        public async Task<User?> GetUserByIdAsync(int userId)
         {
             try
             {
