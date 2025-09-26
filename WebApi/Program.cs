@@ -2,6 +2,8 @@ using WebApi.Data.Implementatoins;
 using WebApi.Data.Interfaces;
 using WebApi.Repositories.Implementations;
 using WebApi.Repositories.Interfaces;
+using WebApi.Services.Implementations;
+using WebApi.Services.Interfaces;
 using WebApi.Utilities.Implementations;
 using WebApi.Utilities.Interfaces;
 
@@ -26,12 +28,7 @@ builder.Services.AddScoped<IConsumerRepository, ConsumerRepository>();
 
 
 // Register Services here
-
-// Register Data here
-
-// Register Repositories here
-
-// Register Services here
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
