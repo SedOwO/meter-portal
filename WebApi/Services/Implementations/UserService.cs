@@ -20,14 +20,13 @@ namespace WebApi.Services.Implementations
             _consumerRepository = consumerRepository;
         }
 
-        public async Task<int> SignUpConsumerAsync(UserRequest user)
+        public async Task<int> SignUpConsumerAsync(UserRequest user, ConsumerSignUpRequest consumer)
         {
-            var existingUser = await _userRepository.GetUserByUsernameAsync(user.Username);
-            if (existingUser != null)
-                throw new Exception("Username already exists");
+            bool isUsernameTaken = await IsUsernameTakenAsync(user.Username);
 
             // hash the password here
             string hashedPassword = _password.HashPassword(user.Password);
+
             var newUser = new UserRequest
             {
                 Username = user.Username,
@@ -35,9 +34,30 @@ namespace WebApi.Services.Implementations
                 Password = hashedPassword
             };
 
+            var createdUserId = await _userRepository.CreateUserAsync(newUser);
+            if (consumer != null)
+            {
+                var newConsumer = new ConsumerDetailRequest
+                {
+                    UserId = createdUserId,
+                    FirstName = consumer.FirstName,
+                    LastName = consumer.LastName,
+                    Email = consumer.Email,
+                    Phone = consumer.Phone,
+                    Address = consumer.Address
+                };
+                await _consumerRepository.CreateConsumerAsync(newConsumer);
+            }
+
+            return createdUserId;
+        }
 
 
-
+        public async Task<bool> IsUsernameTakenAsync(string username)
+        {
+            var existingUser = await _userRepository.GetUserByUsernameAsync(username);
+            var result = (existingUser != null);
+            return result;
         }
     }
 }
