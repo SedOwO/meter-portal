@@ -28,7 +28,6 @@ builder.Services.AddScoped<IConsumerRepository, ConsumerRepository>();
 
 
 // Register Services here
-builder.Services.AddScoped<IUserService, UserService>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
