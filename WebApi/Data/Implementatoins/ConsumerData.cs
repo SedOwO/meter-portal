@@ -31,7 +31,8 @@ namespace WebApi.Data.Implementatoins
                     { "address", consumer.Address }
                 };
 
-                var result = await _db.ExecuteScalarAsync<int>("query", parameters);
+                var result = await _db.ExecuteScalarAsync<int>
+                    ("SELECT public.createconsumer(@userid, @firstname, @lastname, @email, @phone, @address);", parameters);
                 return result;
 
             }

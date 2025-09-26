@@ -20,7 +20,7 @@ namespace WebApi.Services.Implementations
             _consumerRepository = consumerRepository;
         }
 
-        public async Task<int> SignUpConsumerAsync(UserRequest user, ConsumerSignUpRequest consumer)
+        public async Task<int> SignUpConsumerAsync(UserSignUpRequest user, ConsumerSignUpRequest consumer)
         {
             bool isUsernameTaken = await IsUsernameTakenAsync(user.Username);
 

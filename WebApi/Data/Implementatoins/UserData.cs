@@ -27,12 +27,12 @@ namespace WebApi.Data.Implementatoins
                     { "role", user.Role }
                 };
 
-                var result = await _db.ExecuteScalarAsync<int>("query here;", parameters);
+                var result = await _db.ExecuteScalarAsync<int>
+                    ("SELECT public.createuser(@username, @password_hash, @role);", parameters);
                 return result;
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

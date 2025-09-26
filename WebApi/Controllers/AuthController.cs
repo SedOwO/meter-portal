@@ -18,7 +18,7 @@ namespace WebApi.Controllers
 
         public class SignUpConsumerRequest
         {
-            public UserRequest User { get; set; } = null!;
+            public UserSignUpRequest User { get; set; } = null!;
             public ConsumerSignUpRequest Consumer { get; set; } = null!;
         }
 
