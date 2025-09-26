@@ -1,5 +1,7 @@
 using WebApi.Data.Implementatoins;
 using WebApi.Data.Interfaces;
+using WebApi.Repositories.Implementations;
+using WebApi.Repositories.Interfaces;
 using WebApi.Utilities.Implementations;
 using WebApi.Utilities.Interfaces;
 
@@ -11,12 +13,17 @@ builder.Services.AddControllers();
 
 // Register Utilities here
 builder.Services.AddScoped<IDbConnectionUtil, DbConnectionUtil>();
+builder.Services.AddTransient<IPasswordUtil, PasswordUtil>();
 
 // Register Data here
 builder.Services.AddScoped<IUserData, UserData>();
+builder.Services.AddScoped<IConsumerData, ConsumerData>();
 
 
 // Register Repositories here
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IConsumerRepository, ConsumerRepository>();
+
 
 // Register Services here
 

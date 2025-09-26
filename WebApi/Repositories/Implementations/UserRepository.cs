@@ -12,6 +12,7 @@ namespace WebApi.Repositories.Implementations
         {
             _userData = userData;
         }
+
         public async Task<int> CreateUserAsync(UserRequest user)
         {
             return await _userData.CreateUserAsync(user);
@@ -30,6 +31,11 @@ namespace WebApi.Repositories.Implementations
         public async Task<User?> GetUserByIdAsync(int userId)
         {
             return await _userData.GetUserByIdAsync(userId);
+        }
+
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await _userData.GetUserByUsernameAsync(username);
         }
 
         public async Task<bool> UpdateUserAsync(int userId, UserRequest user)
