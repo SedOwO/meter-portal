@@ -27,12 +27,12 @@ namespace WebApi.Data.Implementatoins
                     { "role", user.Role }
                 };
 
-                var result = await _db.ExecuteScalarAsync<int>("query here;", parameters);
+                var result = await _db.ExecuteScalarAsync<int>
+                    ("SELECT public.createuser(@username, @password_hash, @role);", parameters);
                 return result;
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -45,7 +45,7 @@ namespace WebApi.Data.Implementatoins
                 {
                     { "userid", userId }
                 };
-                var result = await _db.ExecuteScalarAsync<bool>("query here;", parameters);
+                var result = await _db.ExecuteScalarAsync<bool>("SELECT public.deleteuser(@userid);", parameters);
                 return result;
             }
             catch (Exception)
@@ -60,7 +60,7 @@ namespace WebApi.Data.Implementatoins
             {
                 var users = new List<User>();
 
-                using var reader = await _db.ExecuteReaderAsync("query here;");
+                using var reader = await _db.ExecuteReaderAsync("SELECT public.getallusers();");
                 while (await reader.ReadAsync())
                 {
                     users.Add(new User
@@ -89,7 +89,7 @@ namespace WebApi.Data.Implementatoins
                     { "userid", userId }
                 };
 
-                using var reader = await _db.ExecuteReaderAsync("query here", parameters);
+                using var reader = await _db.ExecuteReaderAsync("SELECT public.getuserbyid(@userid);", parameters);
 
                 if (await reader.ReadAsync())
                 {
@@ -119,7 +119,7 @@ namespace WebApi.Data.Implementatoins
                     { "username", username }
                 };
 
-                using var reader = await _db.ExecuteReaderAsync("query here", parameters);
+                using var reader = await _db.ExecuteReaderAsync("SELECT public.getuserbyusername(@username);", parameters);
 
                 if (await reader.ReadAsync())
                 {
@@ -152,7 +152,7 @@ namespace WebApi.Data.Implementatoins
                     { "role", user.Role }
                 };
 
-                var result = await _db.ExecuteScalarAsync<bool>("query here;", parameters);
+                var result = await _db.ExecuteScalarAsync<bool>("SELECT public.updateuser(@userid, @username, @password_hash, @role);", parameters);
                 return result;
             }
             catch (Exception)

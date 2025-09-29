@@ -4,7 +4,7 @@ namespace WebApi.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<int> SignUpConsumerAsync(UserRequest user, ConsumerSignUpRequest consumer);
+        Task<int> SignUpConsumerAsync(UserSignUpRequest user, ConsumerSignUpRequest consumer);
         Task<bool> IsUsernameTakenAsync(string username);
 
     }
