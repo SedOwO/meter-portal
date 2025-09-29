@@ -32,7 +32,7 @@ namespace WebApi.Data.Implementatoins
                 };
 
                 var result = await _db.ExecuteScalarAsync<int>
-                    ("SELECT public.createconsumer(@userid, @firstname, @lastname, @email, @phone, @address);", parameters);
+                    ("SELECT * FROM public.createconsumer(@userid, @firstname, @lastname, @email, @phone, @address);", parameters);
                 return result;
 
             }
@@ -51,7 +51,7 @@ namespace WebApi.Data.Implementatoins
                     { "userid", userId }
                 };
 
-                using var reader = await _db.ExecuteReaderAsync("SELECT public.getconsumerbyuserid(@userid);", parameters);
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getconsumerbyuserid(@userid);", parameters);
 
                 if (await reader.ReadAsync())
                 {
