@@ -127,6 +127,7 @@ namespace WebApi.Data.Implementatoins
                     {
                         UserId = reader.GetInt32(reader.GetOrdinal("userid")),
                         Username = reader.GetString(reader.GetOrdinal("username")),
+                        Password = reader.GetString(reader.GetOrdinal("password_hash")),
                         Role = reader.GetString(reader.GetOrdinal("role"))
                     };
                 }

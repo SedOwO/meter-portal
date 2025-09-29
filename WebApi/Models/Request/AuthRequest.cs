@@ -2,7 +2,7 @@
 
 namespace WebApi.Models.Request
 {
-    public class UserSignUpRequest
+    public class AuthRequest
     {
         [Required]
         [StringLength(50, ErrorMessage = "Username cannot exceed 50 characters.")]
