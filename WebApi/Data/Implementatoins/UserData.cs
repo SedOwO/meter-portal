@@ -28,7 +28,7 @@ namespace WebApi.Data.Implementatoins
                 };
 
                 var result = await _db.ExecuteScalarAsync<int>
-                    ("SELECT public.createuser(@username, @password_hash, @role);", parameters);
+                    ("SELECT * FROM public.createuser(@username, @password_hash, @role);", parameters);
                 return result;
             }
             catch (Exception)
@@ -45,7 +45,7 @@ namespace WebApi.Data.Implementatoins
                 {
                     { "userid", userId }
                 };
-                var result = await _db.ExecuteScalarAsync<bool>("SELECT public.deleteuser(@userid);", parameters);
+                var result = await _db.ExecuteScalarAsync<bool>("SELECT * FROM public.deleteuser(@userid);", parameters);
                 return result;
             }
             catch (Exception)
@@ -60,7 +60,7 @@ namespace WebApi.Data.Implementatoins
             {
                 var users = new List<User>();
 
-                using var reader = await _db.ExecuteReaderAsync("SELECT public.getallusers();");
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getallusers();");
                 while (await reader.ReadAsync())
                 {
                     users.Add(new User
@@ -89,7 +89,7 @@ namespace WebApi.Data.Implementatoins
                     { "userid", userId }
                 };
 
-                using var reader = await _db.ExecuteReaderAsync("SELECT public.getuserbyid(@userid);", parameters);
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getuserbyid(@userid);", parameters);
 
                 if (await reader.ReadAsync())
                 {
@@ -119,7 +119,7 @@ namespace WebApi.Data.Implementatoins
                     { "username", username }
                 };
 
-                using var reader = await _db.ExecuteReaderAsync("SELECT public.getuserbyusername(@username);", parameters);
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getuserbyusername(@username);", parameters);
 
                 if (await reader.ReadAsync())
                 {
@@ -134,9 +134,10 @@ namespace WebApi.Data.Implementatoins
 
                 return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.WriteLine($"[GetUserByUsernameAsync] Error: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
                 throw;
             }
         }
@@ -153,7 +154,7 @@ namespace WebApi.Data.Implementatoins
                     { "role", user.Role }
                 };
 
-                var result = await _db.ExecuteScalarAsync<bool>("SELECT public.updateuser(@userid, @username, @password_hash, @role);", parameters);
+                var result = await _db.ExecuteScalarAsync<bool>("SELECT * FROM public.updateuser(@userid, @username, @password_hash, @role);", parameters);
                 return result;
             }
             catch (Exception)

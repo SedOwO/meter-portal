@@ -22,7 +22,13 @@ namespace WebApi.Controllers
             public ConsumerSignUpRequest Consumer { get; set; } = null!;
         }
 
-        [HttpPost("signup")]
+        public class SignUpAdminRequest
+        {
+            public AuthRequest User { get; set; } = null!;
+            public AdminSignUpRequest Admin { get; set; } = null!;
+        }
+
+        [HttpPost("signup/consumer")]
         public async Task<IActionResult> SignUpConsumer([FromBody] SignUpConsumerRequest request)
         {
             if (request == null || request.User == null || request.Consumer == null)
@@ -35,6 +41,32 @@ namespace WebApi.Controllers
                 return Ok(new
                 {
                     Message = "Consumer signed up successfully",
+                    UserId = createdUserId
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred during signup." });
+            }
+        }
+
+        [HttpPost("signup/admin")]
+        public async Task<IActionResult> SignUpAdmin([FromBody] SignUpAdminRequest request)
+        {
+            if (request == null || request.User == null || request.Admin == null)
+                return BadRequest("Invalid request payload.");
+
+            try
+            {
+                var createdUserId = await _userService.SignUpAdminAsync(request.User, request.Admin);
+
+                return Ok(new
+                {
+                    Message = "Admin signed up successfully",
                     UserId = createdUserId
                 });
             }

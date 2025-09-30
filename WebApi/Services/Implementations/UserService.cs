@@ -75,6 +75,12 @@ namespace WebApi.Services.Implementations
                 return null;
             }
 
+            bool isValidPassword = _password.VerifyPassword(loginRequest.Password, user.Password);
+            if (!isValidPassword)
+            {
+                return null; // or throw a custom exception
+            }
+
             string token = _jwt.GenerateToken(user);
 
             return new LoginResponse
@@ -85,6 +91,42 @@ namespace WebApi.Services.Implementations
                 Token = token,
                 Message = "Login Successfull"
             };
+        }
+
+        public async Task<int> SignUpAdminAsync(AuthRequest user, AdminSignUpRequest admin)
+        {
+            bool isUsernameTaken = await IsUsernameTakenAsync(user.Username);
+
+            if (isUsernameTaken)
+            {
+                throw new InvalidOperationException("username already taken");
+            }
+
+            // hash the password here
+            string hashedPassword = _password.HashPassword(user.Password);
+
+            var newUser = new UserRequest
+            {
+                Username = user.Username,
+                Role = "admin",
+                Password = hashedPassword
+            };
+
+            var createdUserId = await _userRepository.CreateUserAsync(newUser);
+            if (admin != null)
+            {
+                var newAdmin = new ConsumerDetailRequest
+                {
+                    UserId = createdUserId,
+                    FirstName = admin.FirstName,
+                    LastName = admin.LastName,
+                    Email = admin.Email,
+                    Phone = admin.Phone,
+                    Address = string.Empty
+                };
+                await _consumerRepository.CreateConsumerAsync(newAdmin);
+            }
+            return createdUserId;
         }
     }
 }
