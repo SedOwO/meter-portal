@@ -52,6 +52,8 @@ builder.Services.AddTransient<IJwtUtil, JwtUtil>();
 // Register Data here
 builder.Services.AddScoped<IUserData, UserData>();
 builder.Services.AddScoped<IConsumerData, ConsumerData>();
+builder.Services.AddScoped<ISmartMeterData, SmartMeterData>();
+builder.Services.AddScoped<IMeterReadingData, MeterReadingData>();
 
 
 // Register Repositories here
