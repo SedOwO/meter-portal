@@ -1,4 +1,6 @@
-﻿using WebApi.Data.Interfaces;
+﻿using System.Diagnostics.Metrics;
+using System.Threading;
+using WebApi.Data.Interfaces;
 using WebApi.Models.DB;
 using WebApi.Models.Request;
 using WebApi.Utilities.Interfaces;
@@ -14,34 +16,155 @@ namespace WebApi.Data.Implementatoins
             _db = db;
         }
 
-        public Task<int> CreateComplaintAsync(ComplaintRequest complaint)
+        public async Task<int> CreateComplaintAsync(ComplaintRequest complaint)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "consumerid", complaint.ConsumerId},
+                    { "title", complaint.Title},
+                    { "description", complaint.Description}
+                };
+
+                var result = await _db.ExecuteScalarAsync<int>
+                    ("SELECT * FROM public.createcomplaint(@consumerid, @title, @description);", parameters);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<bool> DeleteComplaintAsync(int ComplaintId)
+        public async Task<bool> DeleteComplaintAsync(int complaintId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "complaintid", complaintId}
+                };
+                var result = await _db.ExecuteScalarAsync<bool>(
+                    "SELECT * FROM public.deletecomplaint(@complaintid);", parameters);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<IEnumerable<Complaint>> GetAllComplaintsAsync()
+        public async Task<IEnumerable<Complaint>> GetAllComplaintsAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var complaints = new List<Complaint>();
+
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getallcomplaints();");
+                while (await reader.ReadAsync())
+                {
+                    complaints.Add(new Complaint
+                    {
+                        ComplaintId = reader.GetInt32(reader.GetOrdinal("complaintid")),
+                        Title = reader.GetString(reader.GetOrdinal("title")),
+                        Description = reader.GetString(reader.GetOrdinal("description")),
+                        Status = reader.GetString(reader.GetOrdinal("status")),
+                        UpdatedAt = reader.GetDateTime(reader.GetOrdinal("updated_at"))
+                    });
+                }
+
+                return complaints;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-        public Task<IEnumerable<Complaint>> GetAllComplaintsByConsumerIdAsync(int consumerId)
+        public async Task<IEnumerable<Complaint>> GetAllComplaintsByConsumerIdAsync(int consumerId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "consumerid", consumerId}
+                };
+
+                var complaints = new List<Complaint>();
+
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getallcomplaintsbyconsumerid(@consumerid);", parameters);
+                while (await reader.ReadAsync())
+                {
+                    complaints.Add(new Complaint
+                    {
+                        ComplaintId = reader.GetInt32(reader.GetOrdinal("complaintid")),
+                        Title = reader.GetString(reader.GetOrdinal("title")),
+                        Description = reader.GetString(reader.GetOrdinal("description")),
+                        Status = reader.GetString(reader.GetOrdinal("status")),
+                        UpdatedAt = reader.GetDateTime(reader.GetOrdinal("updated_at"))
+                    });
+                }
+
+                return complaints;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-        public Task<Complaint?> GetComplaintByIdAsync(int complaintId)
+        public async Task<Complaint?> GetComplaintByIdAsync(int complaintId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "complaintid", complaintId }
+                };
+
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getcomplaintbyid(@complaintid);", parameters);
+
+                if (await reader.ReadAsync())
+                {
+                    return new Complaint
+                    {
+                        ComplaintId = reader.GetInt32(reader.GetOrdinal("complaintid")),
+                        Title = reader.GetString(reader.GetOrdinal("title")),
+                        Description = reader.GetString(reader.GetOrdinal("description")),
+                        Status = reader.GetString(reader.GetOrdinal("status")),
+                        UpdatedAt = reader.GetDateTime(reader.GetOrdinal("updated_at"))
+                    };
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<bool> UpdateComplaintAsync(int complaintId, ComplaintRequest complaint)
+        public async Task<bool> UpdateComplaintAsync(int complaintId, ComplaintRequest complaint)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "complaintid", complaintId},
+                    { "status", complaint.Status}
+                };
+
+                var result = await _db.ExecuteScalarAsync<bool>(
+                    "SELECT * FROM public.updatecomplaint(@complaintid, @status);", parameters);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

@@ -10,6 +10,6 @@ namespace WebApi.Data.Interfaces
         Task<IEnumerable<Complaint>> GetAllComplaintsAsync();
         Task<IEnumerable<Complaint>> GetAllComplaintsByConsumerIdAsync(int consumerId);
         Task<bool> UpdateComplaintAsync(int complaintId, ComplaintRequest complaint);
-        Task<bool> DeleteComplaintAsync(int ComplaintId);
+        Task<bool> DeleteComplaintAsync(int complaintId);
     }
 }
