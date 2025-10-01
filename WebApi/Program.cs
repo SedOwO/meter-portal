@@ -57,11 +57,13 @@ builder.Services.AddScoped<IMeterReadingData, MeterReadingData>();
 builder.Services.AddScoped<IComplaintData, ComplaintData>();
 builder.Services.AddScoped<IRechargeData, RechargeData>();
 
-
 // Register Repositories here
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IConsumerRepository, ConsumerRepository>();
-
+builder.Services.AddScoped<ISmartMeterRepository, SmartMeterRepository>();
+builder.Services.AddScoped<IMeterReadingRepository, MeterReadingRepository>();
+builder.Services.AddScoped<IComplaintRepository, ComplaintRepository>();
+builder.Services.AddScoped<IRechargeRepository, RechargeRepository>();
 
 // Register Services here
 builder.Services.AddScoped<IUserService, UserService>();
