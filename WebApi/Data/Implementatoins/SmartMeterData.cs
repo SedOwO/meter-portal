@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics.Metrics;
 using WebApi.Data.Interfaces;
 using WebApi.Models.DB;
 using WebApi.Models.Request;
@@ -14,6 +15,27 @@ namespace WebApi.Data.Implementatoins
         {
             _db = db;
         }
+
+        public async Task<bool> AddRechargeAsync(int meterId, decimal amount)
+        {
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "meterid", meterId},
+                    { "amount", amount}
+                };
+
+                var result = await _db.ExecuteScalarAsync<bool>(
+                    "SELECT * FROM public.addsmartmeterrecharge(@meterid, @amount);", parameters);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<int> CreateMeterAsync(SmartMeterRequest meter)
         {
             try
@@ -28,6 +50,26 @@ namespace WebApi.Data.Implementatoins
 
                 var result = await _db.ExecuteScalarAsync<int>
                     ("SELECT * FROM public.createsmartmeter(@consumerid, @meter_number, @location, @status);", parameters);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> DeductRechargeAsync(int meterId, decimal amount)
+        {
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "meterid", meterId},
+                    { "amount", amount}
+                };
+
+                var result = await _db.ExecuteScalarAsync<bool>(
+                    "SELECT * FROM public.deductsmartmeterrecharge(@meterid, @amount);", parameters);
                 return result;
             }
             catch (Exception)
@@ -100,7 +142,8 @@ namespace WebApi.Data.Implementatoins
                         ConsumerId = reader.GetInt32(reader.GetOrdinal("consumerid")),
                         MeterNumber = reader.GetString(reader.GetOrdinal("meter_number")),
                         Location = reader.GetString(reader.GetOrdinal("location")),
-                        Status = reader.GetString(reader.GetOrdinal("status"))
+                        Status = reader.GetString(reader.GetOrdinal("status")),
+                        BalanceAmount = reader.GetDecimal(reader.GetOrdinal("balance_amount"))
                     };
                 }
 

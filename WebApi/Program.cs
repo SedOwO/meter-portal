@@ -54,6 +54,8 @@ builder.Services.AddScoped<IUserData, UserData>();
 builder.Services.AddScoped<IConsumerData, ConsumerData>();
 builder.Services.AddScoped<ISmartMeterData, SmartMeterData>();
 builder.Services.AddScoped<IMeterReadingData, MeterReadingData>();
+builder.Services.AddScoped<IComplaintData, ComplaintData>();
+builder.Services.AddScoped<IRechargeData, RechargeData>();
 
 
 // Register Repositories here

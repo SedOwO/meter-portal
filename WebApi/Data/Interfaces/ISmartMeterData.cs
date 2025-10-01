@@ -10,5 +10,9 @@ namespace WebApi.Data.Interfaces
         Task<IEnumerable<SmartMeter>> GetAllMetersAsync();
         Task<bool> UpdateMeterAsync(int meterId, SmartMeterRequest meter);
         Task<bool> DeleteMeterAsync(int meterId);
+
+        // recharge realated functions
+        Task<bool> AddRechargeAsync(int meterId, decimal amount);
+        Task<bool> DeductRechargeAsync(int meterId, decimal amount);
     }
 }
