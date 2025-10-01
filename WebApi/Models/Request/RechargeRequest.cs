@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApi.Models.DB
+namespace WebApi.Models.Request
 {
-    public class Recharge
+    public class RechargeRequest
     {
-        [Key]
-        public int RechargeId { get; set; }
-
         [Required]
         public int MeterId { get; set; }
 
