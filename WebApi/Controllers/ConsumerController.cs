@@ -32,7 +32,7 @@ namespace WebApi.Controllers
                 var profile = await _profileService.GetProfileByIdAsync(userId);
                 return Ok(profile);
             }
-            catch (ArgumentException ae)
+            catch (ArgumentException)
             {
                 return NotFound();
             }

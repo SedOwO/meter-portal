@@ -14,9 +14,22 @@ namespace WebApi.Services.Implementations
             _consumerRepository = consumerRepository;
         }
 
-        public Task<ConsumerDetail?> GetProfileByIdAsync(int userId)
+        public async Task<ConsumerDetail?> GetProfileByIdAsync(int userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (userId <= 0) return null;
+
+                var consumerProfile = await _consumerRepository.GetConsumerByUserIdAsync(userId);
+
+                if (consumerProfile == null) return null;
+
+                return consumerProfile;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
