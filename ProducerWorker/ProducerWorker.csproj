@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+=======
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+>>>>>>> 2cb3a78a2ac068c30064d47b389e3ee44f0d735f
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,6 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+<<<<<<< HEAD
     <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
+=======
+>>>>>>> 2cb3a78a2ac068c30064d47b389e3ee44f0d735f
   </ItemGroup>
 </Project>

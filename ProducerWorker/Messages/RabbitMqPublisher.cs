@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace ProducerWorker.Messages
 {
+<<<<<<< HEAD
     internal class RabbitMqPublisher : IRabbitMqPublisher
+=======
+    public class RabbitMqPublisher : IRabbitMqPublisher
+>>>>>>> 2cb3a78a2ac068c30064d47b389e3ee44f0d735f
     {
         private const string ExchangeName = "complaint_exchange";
         private const string RoutingKey = "complaint.info";
