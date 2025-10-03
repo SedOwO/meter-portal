@@ -78,6 +78,7 @@ builder.Services.AddScoped<IRechargeRepository, RechargeRepository>();
 // Register Services here
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IConsumerService, ConsumerService>();
 
 
 
@@ -123,6 +124,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();    // this here is important
 
 app.UseAuthorization();
 
