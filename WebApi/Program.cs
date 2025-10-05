@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using WebApi.Data.Implementatoins;
 using WebApi.Data.Interfaces;
+using WebApi.Messages;
 using WebApi.Models.Misc;
 using WebApi.Repositories.Implementations;
 using WebApi.Repositories.Interfaces;
@@ -54,6 +55,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Register RabbitMq Service
+builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+
 // Register Utilities here
 builder.Services.AddScoped<IDbConnectionUtil, DbConnectionUtil>();
 builder.Services.AddTransient<IPasswordUtil, PasswordUtil>();
@@ -79,8 +83,9 @@ builder.Services.AddScoped<IRechargeRepository, RechargeRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IConsumerService, ConsumerService>();
-
-
+builder.Services.AddScoped<IRechargeService, RechargeService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<ISmartMeterService, SmartMeterService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -8,6 +8,7 @@ namespace WebApi.Repositories.Interfaces
         Task<int> CreateMeterAsync(SmartMeterRequest meter);
         Task<SmartMeter?> GetMeterByIdAsync(int meterId);
         Task<IEnumerable<SmartMeter>> GetAllMetersAsync();
+        Task<IEnumerable<SmartMeter>> GetAllMetersByConsumerId(int consumerId);
         Task<bool> UpdateMeterAsync(int meterId, SmartMeterRequest meter);
         Task<bool> DeleteMeterAsync(int meterId);
 

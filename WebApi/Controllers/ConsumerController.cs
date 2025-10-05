@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Security.Principal;
+using WebApi.Data.Implementatoins;
 using WebApi.Models.DB;
 using WebApi.Models.Request;
+using WebApi.Models.Response;
 using WebApi.Repositories.Interfaces;
+using WebApi.Services.Implementations;
 using WebApi.Services.Interfaces;
 
 namespace WebApi.Controllers
@@ -16,6 +19,7 @@ namespace WebApi.Controllers
     public class ConsumerController : ControllerBase
     {
         private readonly IConsumerService _consumerService;
+        private readonly IRechargeService _rechargeService;
         public ConsumerController(IConsumerService consumerService)
         {
             _consumerService = consumerService;
@@ -95,6 +99,39 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { Message = "An error occurred", Detail = ex.Message });
+            }
+        }
+
+        [HttpPost("recharge")]
+        public async Task<IActionResult> RechargeSmartMeter([FromBody] RechargeRequest recharge)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "Invalid user" });
+            }
+
+            if (recharge.Amount <= 0)
+            {
+                return BadRequest(new { Message = "Recharge amount must be greater than zero" });
+            }
+
+            try
+            {
+                var response = await _rechargeService.RechargeSmartMeterAsync(userId, recharge.Amount);
+                return Ok(response);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing recharge", Detail = ex.Message });
             }
         }
     }
