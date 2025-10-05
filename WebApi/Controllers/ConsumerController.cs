@@ -20,9 +20,10 @@ namespace WebApi.Controllers
     {
         private readonly IConsumerService _consumerService;
         private readonly IRechargeService _rechargeService;
-        public ConsumerController(IConsumerService consumerService)
+        public ConsumerController(IConsumerService consumerService, IRechargeService rechargeService)
         {
             _consumerService = consumerService;
+            _rechargeService = rechargeService;
         }
 
         [HttpGet("complaints/{complaintId}")]
@@ -118,7 +119,7 @@ namespace WebApi.Controllers
 
             try
             {
-                var response = await _rechargeService.RechargeSmartMeterAsync(userId, recharge.Amount);
+                var response = await _rechargeService.RechargeSmartMeterAsync(userId, recharge);
                 return Ok(response);
             }
             catch (ArgumentException ex)

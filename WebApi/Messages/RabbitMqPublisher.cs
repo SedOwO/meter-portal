@@ -17,7 +17,7 @@ namespace WebApi.Messages
                 HostName = "localhost",
                 UserName = "testuser",
                 Password = "testpass",
-                VirtualHost = "bank_app_vhost"
+                VirtualHost = "meter_vhost"
             };
 
             using var connection = await factory.CreateConnectionAsync();

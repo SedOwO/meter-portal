@@ -1,9 +1,10 @@
-﻿using WebApi.Models.Response;
+﻿using WebApi.Models.Request;
+using WebApi.Models.Response;
 
 namespace WebApi.Services.Interfaces
 {
     public interface IRechargeService
     {
-        Task<RechargeRespone> RechargeSmartMeterAsync(int userId, decimal amount);
+        Task<RechargeRespone> RechargeSmartMeterAsync(int userId, RechargeRequest recharge);
     }
 }
