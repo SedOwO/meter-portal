@@ -1,0 +1,21 @@
+<<<<<<< HEAD
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+=======
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+>>>>>>> 2cb3a78a2ac068c30064d47b389e3ee44f0d735f
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-ProducerWorker-d82c6bc2-cbd5-4f21-adab-51a87fe8b4ac</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+<<<<<<< HEAD
+    <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
+=======
+>>>>>>> 2cb3a78a2ac068c30064d47b389e3ee44f0d735f
+  </ItemGroup>
+</Project>
