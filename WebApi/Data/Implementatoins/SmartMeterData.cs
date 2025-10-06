@@ -123,6 +123,39 @@ namespace WebApi.Data.Implementatoins
             }
         }
 
+        public async Task<IEnumerable<SmartMeter>> GetAllMetersByConsumerId(int consumerId)
+        {
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "consumerid", consumerId }
+                };
+
+                var smartMeters = new List<SmartMeter>();
+
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getallsmartmetersbyconsumerid(@consumerid);", parameters);
+                while (await reader.ReadAsync())
+                {
+                    smartMeters.Add(new SmartMeter
+                    {
+                        MeterId = reader.GetInt32(reader.GetOrdinal("meterid")),
+                        ConsumerId = reader.GetInt32(reader.GetOrdinal("consumerid")),
+                        MeterNumber = reader.GetString(reader.GetOrdinal("meter_number")),
+                        Location = reader.GetString(reader.GetOrdinal("location")),
+                        Status = reader.GetString(reader.GetOrdinal("status"))
+                    });
+                }
+
+                return smartMeters;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<SmartMeter?> GetMeterByIdAsync(int meterId)
         {
             try
@@ -132,7 +165,7 @@ namespace WebApi.Data.Implementatoins
                     { "meterid", meterId }
                 };
 
-                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getmeterbyid(meterid);", parameters);
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getmeterbyid(@meterid);", parameters);
 
                 if (await reader.ReadAsync())
                 {

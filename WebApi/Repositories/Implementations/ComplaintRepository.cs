@@ -16,32 +16,32 @@ namespace WebApi.Repositories.Implementations
 
         public async Task<int> CreateComplaintAsync(ComplaintRequest complaint)
         {
-            return await CreateComplaintAsync(complaint);
+            return await _complaintData.CreateComplaintAsync(complaint);
         }
 
         public async Task<bool> DeleteComplaintAsync(int complaintId)
         {
-            return await DeleteComplaintAsync(complaintId);
+            return await _complaintData.DeleteComplaintAsync(complaintId);
         }
 
         public async Task<IEnumerable<Complaint>> GetAllComplaintsAsync()
         {
-            return await GetAllComplaintsAsync();
+            return await _complaintData.GetAllComplaintsAsync();
         }
 
         public async Task<IEnumerable<Complaint>> GetAllComplaintsByConsumerIdAsync(int consumerId)
         {
-            return await GetAllComplaintsByConsumerIdAsync(consumerId);
+            return await _complaintData.GetAllComplaintsByConsumerIdAsync(consumerId);
         }
 
         public async Task<Complaint?> GetComplaintByIdAsync(int complaintId)
         {
-            return await GetComplaintByIdAsync(complaintId);
+            return await _complaintData.GetComplaintByIdAsync(complaintId);
         }
 
         public async Task<bool> UpdateComplaintAsync(int complaintId, ComplaintRequest complaint)
         {
-            return await UpdateComplaintAsync(complaintId, complaint);
+            return await _complaintData.UpdateComplaintAsync(complaintId, complaint);
         }
     }
 }
