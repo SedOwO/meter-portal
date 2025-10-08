@@ -1,0 +1,44 @@
+﻿@page
+@model WebUI.Pages.Auth.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-primary">Smart Meter Portal</h2>
+                        <p class="text-muted">Sign in to your account</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @Model.ErrorMessage
+                        </div>
+                    }
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="LoginRequest.Username" class="form-label">Username</label>
+                            <input asp-for="LoginRequest.Username" class="form-control" placeholder="Enter username" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="LoginRequest.Password" class="form-label">Password</label>
+                            <input asp-for="LoginRequest.Password" type="password" class="form-control" placeholder="Enter password" />
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2">Sign In</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">Don't have an account? <a href="#">Register</a></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

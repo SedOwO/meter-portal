@@ -1,0 +1,125 @@
+﻿@page
+@model WebUI.Pages.ProfileModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/Dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Profile">
+                            <i class="bi bi-person"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Recharge">
+                            <i class="bi bi-credit-card"></i> Recharge
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Complaints">
+                            <i class="bi bi-chat-left-text"></i> Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/History">
+                            <i class="bi bi-clock-history"></i> History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="/Auth/Logout">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            <div class="pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">My Profile</h1>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">First Name</label>
+                            <p class="fw-bold">@Model.Profile?.FirstName</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Last Name</label>
+                            <p class="fw-bold">@Model.Profile?.LastName</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Email</label>
+                            <p class="fw-bold">@Model.Profile?.Email</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Phone</label>
+                            <p class="fw-bold">@Model.Profile?.Phone</p>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="text-muted small">Address</label>
+                            <p class="fw-bold">@Model.Profile?.Address</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Meter Details -->
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Smart Meter Details</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Meter != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Meter Number</label>
+                                <p class="fw-bold">@Model.Meter.MeterNumber</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Location</label>
+                                <p class="fw-bold">@Model.Meter.Location</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Status</label>
+                                <p>
+                                    <span class="badge bg-@(Model.Meter.Status == "active" ? "success" : "danger") fs-6">
+                                        @Model.Meter.Status.ToUpper()
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Current Balance</label>
+                                <p class="fw-bold text-primary fs-4">$@Model.Meter.BalanceAmount.ToString("F2")</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            No smart meter assigned. Please contact support.
+                        </div>
+                    }
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

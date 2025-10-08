@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Security.Principal;
 using WebApi.Data.Implementatoins;
@@ -20,10 +21,16 @@ namespace WebApi.Controllers
     {
         private readonly IConsumerService _consumerService;
         private readonly IRechargeService _rechargeService;
-        public ConsumerController(IConsumerService consumerService, IRechargeService rechargeService)
+        private readonly ISmartMeterRepository _smartMeterRepository;
+        private readonly IProfileService _profileService;
+        private readonly INotificationService _notificationService;
+        public ConsumerController(INotificationService notificationService, IConsumerService consumerService, IRechargeService rechargeService, ISmartMeterRepository smartMeterRepository, IProfileService profileService)
         {
             _consumerService = consumerService;
             _rechargeService = rechargeService;
+            _smartMeterRepository = smartMeterRepository;
+            _profileService = profileService;
+            _notificationService = notificationService;
         }
 
         [HttpGet("complaints/{complaintId}")]
@@ -133,6 +140,105 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { Message = "An error occurred while processing recharge", Detail = ex.Message });
+            }
+        }
+
+        [HttpGet("recharge/history")]
+        public async Task<IActionResult> GetRechargeHistory()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "Invalid user" });
+            }
+
+            try
+            {
+                var history = await _rechargeService.GetUserRechargeHistoryAsync(userId);
+                return Ok(history);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred", Detail = ex.Message });
+            }
+        }
+
+        [HttpGet("smartmeter")]
+        public async Task<IActionResult> GetSmartMeter()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "Invalid user" });
+            }
+
+            var consumer = await _profileService.GetProfileByIdAsync(userId);
+
+            try
+            {
+                var meters = await _smartMeterRepository.GetAllMetersByConsumerId(consumer.ConsumerId);
+                return Ok(meters);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred", Detail = ex.Message });
+            }
+        }
+
+        [HttpGet("notifications")]
+        public async Task<IActionResult> GetUnreadNotifications()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "Invalid user" });
+            }
+
+            try
+            {
+                var notifications = await _notificationService.GetUnreadNotificationAsync(userId);
+                return Ok(notifications);
+
+            }
+            catch (InvalidOperationException ex) 
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred", Detail = ex.Message });
+            }
+        }
+
+        [HttpPut("notifications/{notificationId}")]
+        public async Task<IActionResult> MarkNotificationAsRead(int notificationId)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "Invalid user" });
+            }
+
+            try
+            {
+                await _notificationService.MarkNotificationAsRead(userId, notificationId);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred", Detail = ex.Message });
             }
         }
     }

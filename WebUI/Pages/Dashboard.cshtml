@@ -1,0 +1,248 @@
+﻿@page
+@model WebUI.Pages.DashboardModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+    <div id="notificationToastContainer"></div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/Dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Profile">
+                            <i class="bi bi-person"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Recharge">
+                            <i class="bi bi-credit-card"></i> Recharge
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Complaints">
+                            <i class="bi bi-chat-left-text"></i> Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/History">
+                            <i class="bi bi-clock-history"></i> History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="/Auth/Logout">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Dashboard</h1>
+                <div class="d-flex align-items-center">
+                    <!-- Notification Bell Icon -->
+                    <div class="dropdown me-3">
+                        <button class="btn btn-outline-primary position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell fs-5"></i>
+                            @if (Model.Notifications != null && Model.Notifications.Any())
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    @Model.Notifications.Count
+                                </span>
+                            }
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" style="width: 350px; max-height: 400px; overflow-y: auto;">
+                            @if (Model.Notifications == null || !Model.Notifications.Any())
+                            {
+                                <li class="dropdown-item text-center text-muted">
+                                    <i class="bi bi-check-circle"></i> No new notifications
+                                </li>
+                            }
+                            else
+                            {
+                                @foreach (var notification in Model.Notifications)
+                                {
+                                    <li>
+                                        <div class="dropdown-item">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="flex-grow-1">
+                                                    <small class="text-muted">@notification.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")</small>
+                                                    <p class="mb-1">@notification.Message</p>
+                                                </div>
+                                                <form method="post" asp-page-handler="MarkAsRead">
+                                                    <input type="hidden" name="notificationId" value="@notification.NotificationId" />
+                                                    <button type="submit" class="btn btn-sm btn-link text-primary p-0">
+                                                        <i class="bi bi-check"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="text-muted">Welcome, @Model.Username</div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-white @(Model.Meter?.BalanceAmount < 50 ? "bg-danger" : "bg-primary")">
+                        <div class="card-body">
+                            <h5 class="card-title">Current Balance</h5>
+                            <h2 class="card-text">$@Model.Meter?.BalanceAmount.ToString("F2")</h2>
+                            @if (Model.Meter?.BalanceAmount < 50)
+                            {
+                                <small><i class="bi bi-exclamation-triangle"></i> Low Balance!</small>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h5 class="card-title">Meter Status</h5>
+                            <h2 class="card-text">@Model.Meter?.Status</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-info">
+                        <div class="card-body">
+                            <h5 class="card-title">Meter Number</h5>
+                            <h2 class="card-text">@Model.Meter?.MeterNumber</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <h5 class="card-title">Consumer ID</h5>
+                            <h2 class="card-text">#@Model.Profile?.ConsumerId</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a href="/Consumer/Recharge" class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-credit-card"></i> Recharge Now
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/Consumer/Complaints" class="btn btn-warning btn-lg w-100">
+                                <i class="bi bi-chat-left-text"></i> File Complaint
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/Consumer/History" class="btn btn-info btn-lg w-100 text-white">
+                                <i class="bi bi-clock-history"></i> View History
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-show toast notifications on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (Model.Notifications != null && Model.Notifications.Any())
+            {
+                    foreach (var notification in Model.Notifications)
+                    {
+                            <text>
+                            showToast(@notification.NotificationId, '@Html.Raw(notification.Message)', '@notification.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")');
+                            </text>
+                    }
+            }
+        });
+
+        function showToast(notificationId, message, timestamp) {
+            const toastHtml = `
+                <div class="toast" role="alert" data-notification-id="${notificationId}">
+                    <div class="toast-header bg-danger text-white">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong class="me-auto">Low Balance Alert</strong>
+                        <small>${timestamp}</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                        <div class="mt-2 pt-2 border-top">
+                            <a href="/Consumer/Recharge" class="btn btn-sm btn-primary me-2">
+                                <i class="bi bi-credit-card"></i> Recharge Now
+                            </a>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="markAsRead(${notificationId})">
+                                Mark as Read
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const container = document.getElementById('notificationToastContainer');
+            container.insertAdjacentHTML('beforeend', toastHtml);
+
+            const toastElement = container.lastElementChild;
+            const toast = new bootstrap.Toast(toastElement, {
+                autohide: false
+            });
+            toast.show();
+        }
+
+        function markAsRead(notificationId) {
+            // Submit form to mark as read
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = '?handler=MarkAsRead';
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'notificationId';
+            input.value = notificationId;
+            form.appendChild(input);
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = token;
+            form.appendChild(tokenInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        setInterval(function() {
+            location.reload();
+        }, 30000); 
+    </script>
+}

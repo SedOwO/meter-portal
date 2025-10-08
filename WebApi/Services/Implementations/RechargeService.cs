@@ -61,5 +61,24 @@ namespace WebApi.Services.Implementations
 
             return response;
         }
+
+        public async Task<IEnumerable<RechargeRespone>> GetUserRechargeHistoryAsync(int userId)
+        {
+            var consumer = await _consumerRepository.GetConsumerByUserIdAsync(userId);
+            if (consumer == null)
+                throw new InvalidOperationException("Consumer profile not found");
+
+            var meters = await _smartMeterRepository.GetAllMetersByConsumerId(consumer.ConsumerId);
+
+            var allRecharges = new List<RechargeRespone>();
+
+            foreach (var meter in meters)
+            {
+                var meterRecharges = await _rechargeRepository.GetAllRechargesByMeterIdAsync(meter.MeterId);
+                allRecharges.AddRange(meterRecharges); // collect all recharges
+            }
+
+            return allRecharges.OrderByDescending(r => r.RechargeDate); // optional: latest first
+        }
     }
 }

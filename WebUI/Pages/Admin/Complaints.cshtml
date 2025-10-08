@@ -1,0 +1,166 @@
+﻿@page
+@model WebUI.Pages.Admin.ComplaintsModel
+@{
+    ViewData["Title"] = "Manage Complaints";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Manage Complaints</h1>
+    <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.reload()">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> @Model.SuccessMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> @Model.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> All Complaints</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Complaints == null || !Model.Complaints.Any())
+        {
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-inbox fs-1"></i>
+                <p class="mt-2">No complaints found</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Consumer ID</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var complaint in Model.Complaints)
+                        {
+                            <tr>
+                                <td><strong>#@complaint.ComplaintId</strong></td>
+                                <td>@complaint.ConsumerId</td>
+                                <td>@complaint.Title</td>
+                                <td>
+                                    @if (complaint.Description.Length > 50)
+                                    {
+                                        <span data-bs-toggle="tooltip" title="@complaint.Description">
+                                            @complaint.Description.Substring(0, 50)...
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @complaint.Description
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        var badgeClass = complaint.Status switch
+                                        {
+                                            "open" => "bg-warning",
+                                            "in_progress" => "bg-info",
+                                            "resolved" => "bg-success",
+                                            "closed" => "bg-secondary",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@complaint.Status</span>
+                                </td>
+                                <td>@complaint.UpdatedAt.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#updateModal@complaint.ComplaintId">
+                                        <i class="bi bi-pencil"></i> Update
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Update Modal -->
+                            <div class="modal fade" id="updateModal@complaint.ComplaintId" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="post" asp-page-handler="UpdateStatus">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Update Complaint #@complaint.ComplaintId</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" asp-for="ComplaintId" value="@complaint.ComplaintId" />
+
+                                                <div class="mb-3">
+                                                    <label class="form-label"><strong>Title:</strong></label>
+                                                    <p>@complaint.Title</p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label"><strong>Description:</strong></label>
+                                                    <p>@complaint.Description</p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label asp-for="Status" class="form-label">Update Status</label>
+                                                    <select asp-for="Status" class="form-select">
+                                                        <option value="open" selected="@(complaint.Status == "open")">Open</option>
+                                                        <option value="in_progress" selected="@(complaint.Status == "in_progress")">In Progress</option>
+                                                        <option value="resolved" selected="@(complaint.Status == "resolved")">Resolved</option>
+                                                        <option value="closed" selected="@(complaint.Status == "closed")">Closed</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Update Status</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Summary -->
+            <div class="alert alert-info mt-3">
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Total:</strong> @Model.Complaints.Count
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Open:</strong> @Model.Complaints.Count(c => c.Status == "open")
+                    </div>
+                    <div class="col-md-3">
+                        <strong>In Progress:</strong> @Model.Complaints.Count(c => c.Status == "in_progress")
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Resolved:</strong> @Model.Complaints.Count(c => c.Status == "resolved")
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

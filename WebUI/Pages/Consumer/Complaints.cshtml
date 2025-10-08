@@ -1,0 +1,142 @@
+﻿@page
+@model WebUI.Pages.Consumer.ComplaintsModel
+@{
+    ViewData["Title"] = "Complaints";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar (same as Dashboard) -->
+        <nav class="col-md-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/Dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Profile">
+                            <i class="bi bi-person"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Recharge">
+                            <i class="bi bi-credit-card"></i> Recharge
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Complaints">
+                            <i class="bi bi-chat-left-text"></i> Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/History">
+                            <i class="bi bi-clock-history"></i> History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="/Auth/Logout">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">My Complaints</h1>
+                <button type="button" class="btn btn-warning" onclick="document.getElementById('complaintForm').classList.toggle('d-none')">
+                    File New Complaint
+                </button>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @Model.SuccessMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @Model.ErrorMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- New Complaint Form -->
+            <div id="complaintForm" class="card mb-4 @(Model.ShowForm ? "" : "d-none")">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">New Complaint</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="NewComplaint.Title" class="form-label">Title</label>
+                            <input asp-for="NewComplaint.Title" class="form-control" placeholder="Brief description of issue" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="NewComplaint.Description" class="form-label">Description</label>
+                            <textarea asp-for="NewComplaint.Description" class="form-control" rows="5" placeholder="Detailed description of your complaint"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Submit Complaint</button>
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('complaintForm').classList.add('d-none')">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Complaints List -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Complaints</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Complaints == null || !Model.Complaints.Any())
+                    {
+                        <div class="text-center text-muted py-4">
+                            <p>No complaints found.</p>
+                            <small>Click "File New Complaint" to submit your first complaint.</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var complaint in Model.Complaints)
+                                    {
+                                        <tr>
+                                            <td>#@complaint.ComplaintId</td>
+                                            <td>@complaint.Title</td>
+                                            <td>@(complaint.Description.Length > 50 ? complaint.Description.Substring(0, 50) + "..." : complaint.Description)</td>
+                                            <td>
+                                                <span class="badge bg-@(complaint.Status == "open" ? "warning" : complaint.Status == "in_progress" ? "info" : "success")">
+                                                    @complaint.Status
+                                                </span>
+                                            </td>
+                                            <td>@complaint.UpdatedAt.ToString("MMM dd, yyyy")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

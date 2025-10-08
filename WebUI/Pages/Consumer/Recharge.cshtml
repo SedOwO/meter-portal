@@ -1,0 +1,165 @@
+﻿@page
+@model WebUI.Pages.Consumer.RechargeModel
+@{
+    ViewData["Title"] = "Recharge";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar (same as Dashboard) -->
+        <nav class="col-md-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/Dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Profile">
+                            <i class="bi bi-person"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Recharge">
+                            <i class="bi bi-credit-card"></i> Recharge
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Complaints">
+                            <i class="bi bi-chat-left-text"></i> Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/History">
+                            <i class="bi bi-clock-history"></i> History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="/Auth/Logout">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            <div class="pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Recharge Meter</h1>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @Model.SuccessMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @Model.ErrorMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Current Balance Card -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Current Balance</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <h1 class="display-4 text-primary">₹@Model.Meter?.BalanceAmount.ToString("F2")</h1>
+                            <p class="text-muted">Meter: @Model.Meter?.MeterNumber</p>
+                        </div>
+                    </div>
+
+                    <!-- Recharge Form -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Add Balance</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                <div class="mb-3">
+                                    <label asp-for="Amount" class="form-label">Recharge Amount</label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text">₹</span>
+                                        <input asp-for="Amount" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                                    </div>
+                                </div>
+
+                                <!-- Quick Select Buttons -->
+                                <div class="mb-3">
+                                    <label class="form-label">Quick Select</label>
+                                    <div class="row g-2">
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-outline-primary w-100" onclick="document.querySelector('[name=Amount]').value='50'">₹50</button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-outline-primary w-100" onclick="document.querySelector('[name=Amount]').value='100'">₹100</button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-outline-primary w-100" onclick="document.querySelector('[name=Amount]').value='200'">₹200</button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-outline-primary w-100" onclick="document.querySelector('[name=Amount]').value='500'">₹500</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    Recharge Now
+                                </button>
+
+                                <div class="text-center mt-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-shield-check"></i> Secure payment • Instant recharge • 24/7 available
+                                    </small>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <!-- Info Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Recharge Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6>How it works:</h6>
+                            <ol>
+                                <li>Enter the amount you want to recharge</li>
+                                <li>Click "Recharge Now" button</li>
+                                <li>Your balance will be updated instantly</li>
+                            </ol>
+
+                            <hr>
+
+                            <h6>Benefits:</h6>
+                            <ul>
+                                <li>Instant balance update</li>
+                                <li>Secure payment processing</li>
+                                <li>24/7 availability</li>
+                                <li>Transaction history tracking</li>
+                            </ul>
+
+                            <hr>
+
+                            <div class="alert alert-info">
+                                <strong>Note:</strong> Minimum recharge amount is ₹1.00. Maximum is ₹99,999.99 per transaction.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

@@ -15,12 +15,12 @@ namespace WebApi.Repositories.Implementations
 
         public async Task<IEnumerable<RechargeRespone>> GetAllRechargesByMeterIdAsync(int meterId)
         {
-            return await GetAllRechargesByMeterIdAsync(meterId);
+            return await _rechargeData.GetAllRechargesByMeterIdAsync(meterId);
         }
 
         public async Task<RechargeRespone?> GetRechargeByIdAsync(int rechargeId)
         {
-            return await GetRechargeByIdAsync(rechargeId);
+            return await _rechargeData.GetRechargeByIdAsync(rechargeId);
         }
     }
 }

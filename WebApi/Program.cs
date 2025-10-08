@@ -70,6 +70,8 @@ builder.Services.AddScoped<ISmartMeterData, SmartMeterData>();
 builder.Services.AddScoped<IMeterReadingData, MeterReadingData>();
 builder.Services.AddScoped<IComplaintData, ComplaintData>();
 builder.Services.AddScoped<IRechargeData, RechargeData>();
+builder.Services.AddScoped<INotificationData, NotificationData>();
+
 
 // Register Repositories here
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -78,6 +80,8 @@ builder.Services.AddScoped<ISmartMeterRepository, SmartMeterRepository>();
 builder.Services.AddScoped<IMeterReadingRepository, MeterReadingRepository>();
 builder.Services.AddScoped<IComplaintRepository, ComplaintRepository>();
 builder.Services.AddScoped<IRechargeRepository, RechargeRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
 
 // Register Services here
 builder.Services.AddScoped<IUserService, UserService>();
@@ -86,6 +90,8 @@ builder.Services.AddScoped<IConsumerService, ConsumerService>();
 builder.Services.AddScoped<IRechargeService, RechargeService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ISmartMeterService, SmartMeterService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

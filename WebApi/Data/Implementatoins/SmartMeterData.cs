@@ -143,7 +143,8 @@ namespace WebApi.Data.Implementatoins
                         ConsumerId = reader.GetInt32(reader.GetOrdinal("consumerid")),
                         MeterNumber = reader.GetString(reader.GetOrdinal("meter_number")),
                         Location = reader.GetString(reader.GetOrdinal("location")),
-                        Status = reader.GetString(reader.GetOrdinal("status"))
+                        Status = reader.GetString(reader.GetOrdinal("status")),
+                        BalanceAmount = reader.GetDecimal(reader.GetOrdinal("balance_amount"))
                     });
                 }
 

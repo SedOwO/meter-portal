@@ -67,6 +67,7 @@ namespace WebApi.Data.Implementatoins
                     complaints.Add(new Complaint
                     {
                         ComplaintId = reader.GetInt32(reader.GetOrdinal("complaintid")),
+                        ConsumerId = reader.GetInt32(reader.GetOrdinal("consumerid")),
                         Title = reader.GetString(reader.GetOrdinal("title")),
                         Description = reader.GetString(reader.GetOrdinal("description")),
                         Status = reader.GetString(reader.GetOrdinal("status")),

@@ -1,0 +1,96 @@
+﻿@page
+@model WebUI.Pages.Admin.ProfileModel
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<div class="pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">My Profile</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-person-circle"></i> Administrator Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="text-muted small">First Name</label>
+                        <p class="fw-bold fs-5">@Model.Profile?.FirstName</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small">Last Name</label>
+                        <p class="fw-bold fs-5">@Model.Profile?.LastName</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="text-muted small">Email</label>
+                        <p class="fw-bold">
+                            <i class="bi bi-envelope"></i> @Model.Profile?.Email
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small">Phone</label>
+                        <p class="fw-bold">
+                            <i class="bi bi-telephone"></i> @Model.Profile?.Phone
+                        </p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="text-muted small">Username</label>
+                        <p class="fw-bold">
+                            <i class="bi bi-person-badge"></i> @HttpContext.Session.GetString("Username")
+                        </p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="text-muted small">Role</label>
+                        <p>
+                            <span class="badge bg-danger fs-6">ADMINISTRATOR</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-gear"></i> Account Settings</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" disabled>
+                        <i class="bi bi-pencil"></i> Edit Profile
+                    </button>
+                    <button class="btn btn-outline-warning" disabled>
+                        <i class="bi bi-key"></i> Change Password
+                    </button>
+                    <a href="/Auth/Logout" class="btn btn-outline-danger">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header bg-secondary text-white">
+                <h6 class="mb-0"><i class="bi bi-info-circle"></i> Account Info</h6>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    <p><strong>User ID:</strong> @Model.Profile?.UserId</p>
+                    <p><strong>Admin ID:</strong> @Model.Profile?.ConsumerId</p>
+                    <p class="mb-0"><strong>Account Type:</strong> Administrator</p>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

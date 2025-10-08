@@ -1,0 +1,143 @@
+﻿@page
+@model WebUI.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="text-muted">Welcome back, @Model.Username</div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-white-50 mb-1">Total Consumers</h6>
+                        <h2 class="mb-0">@Model.Stats.TotalConsumers</h2>
+                    </div>
+                    <i class="bi bi-people fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-white-50 mb-1">Active Meters</h6>
+                        <h2 class="mb-0">@Model.Stats.ActiveMeters</h2>
+                    </div>
+                    <i class="bi bi-speedometer2 fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-white-50 mb-1">Pending Complaints</h6>
+                        <h2 class="mb-0">@Model.Stats.PendingComplaints</h2>
+                    </div>
+                    <i class="bi bi-exclamation-triangle fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-white-50 mb-1">Low Balance</h6>
+                        <h2 class="mb-0">@Model.Stats.LowBalanceMeters</h2>
+                    </div>
+                    <i class="bi bi-battery-half fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="/Admin/Complaints" class="btn btn-warning btn-lg w-100">
+                            <i class="bi bi-file-earmark-text"></i> Manage Complaints
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/Admin/Consumers" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-people"></i> View Consumers
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/Admin/Meters" class="btn btn-success btn-lg w-100">
+                            <i class="bi bi-speedometer2"></i> View Meters
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/Admin/Profile" class="btn btn-info btn-lg w-100 text-white">
+                            <i class="bi bi-person"></i> My Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">System Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Complaint Status</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Open
+                                <span class="badge bg-warning rounded-pill">@Model.Stats.PendingComplaints</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Total
+                                <span class="badge bg-primary rounded-pill">@Model.Stats.TotalComplaints</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Meter Status</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Active
+                                <span class="badge bg-success rounded-pill">@Model.Stats.ActiveMeters</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Low Balance
+                                <span class="badge bg-danger rounded-pill">@Model.Stats.LowBalanceMeters</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

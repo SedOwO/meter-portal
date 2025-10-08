@@ -1,0 +1,99 @@
+﻿@page
+@model WebUI.Pages.Consumer.HistoryModel
+@{
+    ViewData["Title"] = "Recharge History";
+}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/Dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Profile">
+                            <i class="bi bi-person"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Recharge">
+                            <i class="bi bi-credit-card"></i> Recharge
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/Complaints">
+                            <i class="bi bi-chat-left-text"></i> Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Consumer/History">
+                            <i class="bi bi-clock-history"></i> History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="/Auth/Logout">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            <div class="pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Recharge History</h1>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">All Transactions</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RechargeHistory == null || !Model.RechargeHistory.Any())
+                    {
+                        <div class="text-center text-muted py-4">
+                            <p>No recharge history found.</p>
+                            <small>Your recharge transactions will appear here.</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Meter ID</th>
+                                        <th>Amount</th>
+                                        <th>Date & Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var recharge in Model.RechargeHistory)
+                                    {
+                                        <tr>
+                                            <td><strong>#@recharge.RechargeId</strong></td>
+                                            <td>@recharge.MeterId</td>
+                                            <td class="text-success fw-bold">₹@recharge.Amount.ToString("F2")</td>
+                                            <td>@recharge.RechargeDate.ToString("MMM dd, yyyy hh:mm tt")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-info mt-3">
+                            <strong>Total Transactions:</strong> @Model.RechargeHistory.Count |
+                            <strong>Total Amount:</strong> ₹@Model.RechargeHistory.Sum(r => r.Amount).ToString("F2")
+                        </div>
+                    }
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
