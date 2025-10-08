@@ -12,9 +12,11 @@ namespace RechargeNotification
         private readonly IConfiguration _configuration;
         private readonly int _intervalMinutes;
         private readonly INotificationService _notificationService;
+        private readonly IEmailService _emailService;
 
-        public Worker(INotificationService notificationService, ILogger<Worker> logger, IBalanceMonitorService monitorService, IConfiguration configuration)
+        public Worker(IEmailService emailService, INotificationService notificationService, ILogger<Worker> logger, IBalanceMonitorService monitorService, IConfiguration configuration)
         {
+            _emailService = emailService;
             _notificationService = notificationService;
             _logger = logger;
             _monitorService = monitorService;
@@ -60,6 +62,8 @@ namespace RechargeNotification
                 // Log critical consumers
                 foreach (var consumer in lowBalanceConsumers)
                 {
+                    await _emailService.SendLowBalanceAlertAsync(consumer.ConsumerId);
+
                     var message = $"Low balance alert: your remaining balance is {consumer.BalanceAmount}.";
 
                     await _notificationService.AddNotificationAsync(new Notification

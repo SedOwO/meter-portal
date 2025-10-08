@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RechargeNotification.Models
+namespace RechargeNotification.Models.Settings
 {
     public class MonitorSettings
     {
