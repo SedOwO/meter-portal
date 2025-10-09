@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Configuration;
 using RechargeNotification;
+using RechargeNotification.Models.Settings;
 using RechargeNotification.Services.Implementations;
 using RechargeNotification.Services.Interfaces;
 
@@ -10,8 +12,12 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
 
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
 builder.Services.AddSingleton<IBalanceMonitorService, BalanceMonitorService>();
 builder.Services.AddSingleton<INotificationService, NotificationService>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
+
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();

@@ -1,4 +1,5 @@
 ﻿using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using Npgsql;
 using RechargeNotification.Models;
@@ -13,16 +14,16 @@ namespace RechargeNotification.Services.Implementations
     {
         private readonly string _connectionString;
         private readonly EmailSettings _emailSettings;
-        private readonly ILogger<BalanceMonitorService> _logger;
+        private readonly ILogger<EmailService> _logger;
 
         private EmailDto target = null;
 
-        public EmailService(EmailSettings emailSettings, IConfiguration config, ILogger<BalanceMonitorService> logger)
+        public EmailService(IOptions<EmailSettings> emailSettings, IConfiguration config, ILogger<EmailService> logger)
         {
             _connectionString = config.GetConnectionString("DefaultConnection")
                    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             _logger = logger;
-            _emailSettings = config.GetSection("EmailSettings").Get<EmailSettings>()
+            _emailSettings = emailSettings.Value
                    ?? throw new InvalidOperationException("Email settings not configured");
         }
 
@@ -30,16 +31,15 @@ namespace RechargeNotification.Services.Implementations
         {
             try
             {
-                using NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+                using var conn = new NpgsqlConnection(_connectionString);
                 await conn.OpenAsync();
 
-                using var cmd = new NpgsqlCommand(
-                    "SELECT * FROM public.getemaildetails(@consumerid)", conn);
-
+                using var cmd = new NpgsqlCommand("SELECT * FROM public.getemaildetails(@consumerid)", conn);
                 cmd.Parameters.AddWithValue("consumerid", consumerId);
 
-                using var reader = await cmd.ExecuteReaderAsync();
+                EmailDto? target = null;
 
+                using var reader = await cmd.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
                     target = new EmailDto
@@ -51,22 +51,31 @@ namespace RechargeNotification.Services.Implementations
                     };
                 }
 
+                if (target == null)
+                {
+                    _logger.LogWarning("No consumer record found for ID {ConsumerId}.", consumerId);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(target.Email))
+                {
+                    _logger.LogWarning("Consumer {ConsumerName} has no valid email.", target.ConsumerName);
+                    return;
+                }
+
                 var message = new MimeMessage();
                 message.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
                 message.To.Add(new MailboxAddress(target.ConsumerName, target.Email));
-
                 message.Subject = "Low Balance Alert - Smart Meter System";
 
                 var bodyBuilder = new BodyBuilder
                 {
                     HtmlBody = CreateEmailTemplate(target.ConsumerName, target.MeterNumber, target.BalanceAmount)
                 };
-
                 message.Body = bodyBuilder.ToMessageBody();
 
                 using var client = new SmtpClient();
-
-                await client.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.SmtpPort, _emailSettings.EnableSsl);
+                await client.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.SmtpPort, MailKit.Security.SecureSocketOptions.StartTls);
                 await client.AuthenticateAsync(_emailSettings.SenderEmail, _emailSettings.SenderPassword);
                 await client.SendAsync(message);
                 await client.DisconnectAsync(true);
@@ -75,7 +84,7 @@ namespace RechargeNotification.Services.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to send email to {Email}", target.Email);
+                _logger.LogError(ex, "Failed to send email for consumer ID {ConsumerId}", consumerId);
                 throw;
             }
         }
