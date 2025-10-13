@@ -1,4 +1,5 @@
 ﻿using WebApi.Models.DB;
+using WebApi.Models.Misc;
 using WebApi.Models.Request;
 
 namespace WebApi.Data.Interfaces
@@ -11,5 +12,6 @@ namespace WebApi.Data.Interfaces
         Task<IEnumerable<Complaint>> GetAllComplaintsByConsumerIdAsync(int consumerId);
         Task<bool> UpdateComplaintAsync(int complaintId, ComplaintRequest complaint);
         Task<bool> DeleteComplaintAsync(int complaintId);
+        Task<PagedList<Complaint>> GetAllComplaintsPaginatedAsync(int page, int pageSize);
     }
 }

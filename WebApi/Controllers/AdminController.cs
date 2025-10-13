@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Security.Claims;
+using WebApi.Models.Misc;
 using WebApi.Models.Request;
 using WebApi.Repositories.Implementations;
 using WebApi.Services.Interfaces;
@@ -21,8 +23,9 @@ namespace WebApi.Controllers
             _smartMeterService = smartMeterService;
         }
 
+
         [HttpGet("complaints")]
-        public async Task<IActionResult> GetAllComplaints()
+        public async Task<IActionResult> GetAllComplaintsPaginated([FromQuery] PaginationParams? paginationParams)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(userIdString, out var userId))
@@ -32,16 +35,44 @@ namespace WebApi.Controllers
 
             try
             {
-                var complaints = await _adminService.GetAllComplaints();
-                return Ok(complaints);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { Message = ex.Message });
+                if (paginationParams == null || paginationParams.Page <= 0 || paginationParams.PageSize <= 0)
+                {
+                    var complaints = await _adminService.GetAllComplaints();
+                    return Ok(complaints);
+                }
+
+                var pagedComplaints = await _adminService.GetAllComplaintsPaginated(paginationParams.Page, paginationParams.PageSize);
+
+                Response.Headers.Append("X-Pagination-CurrentPage", pagedComplaints.Page.ToString());
+                Response.Headers.Append("X-Pagination-PageSize", pagedComplaints.PageSize.ToString());
+                Response.Headers.Append("X-Pagination-TotalCount", pagedComplaints.TotalCount.ToString());
+                Response.Headers.Append("X-Pagination-TotalPages", pagedComplaints.TotalPages.ToString());
+                Response.Headers.Append("X-Pagination-HasNext", pagedComplaints.HasNextPage.ToString());
+                Response.Headers.Append("X-Pagination-HasPrevious", pagedComplaints.HasPreviousPage.ToString());
+
+                return Ok(new
+                {
+                    items = pagedComplaints.Items,
+                    paginaiton = new
+                    {
+                        page = pagedComplaints.Page,
+                        pageSize = pagedComplaints.PageSize,
+                        totalCount = pagedComplaints.TotalCount,
+                        totalPages = pagedComplaints.TotalPages,
+                        hasNextPage = pagedComplaints.HasNextPage,
+                        hasPreviousPage = pagedComplaints.HasPreviousPage
+                    }
+                });
+
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "An error occurred", Detail = ex.Message });
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred",
+                    Detail = ex.Message,
+                    StackTrace = ex.StackTrace
+                });
             }
         }
 

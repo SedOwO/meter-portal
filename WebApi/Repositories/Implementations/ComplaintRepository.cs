@@ -1,5 +1,6 @@
 ﻿using WebApi.Data.Interfaces;
 using WebApi.Models.DB;
+using WebApi.Models.Misc;
 using WebApi.Models.Request;
 using WebApi.Repositories.Interfaces;
 
@@ -32,6 +33,11 @@ namespace WebApi.Repositories.Implementations
         public async Task<IEnumerable<Complaint>> GetAllComplaintsByConsumerIdAsync(int consumerId)
         {
             return await _complaintData.GetAllComplaintsByConsumerIdAsync(consumerId);
+        }
+
+        public async Task<PagedList<Complaint>> GetAllComplaintsPaginatedAsync(int page, int pageSize)
+        {
+            return await _complaintData.GetAllComplaintsPaginatedAsync(page, pageSize);
         }
 
         public async Task<Complaint?> GetComplaintByIdAsync(int complaintId)

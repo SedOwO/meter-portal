@@ -1,7 +1,9 @@
-﻿using System.Diagnostics.Metrics;
+﻿using System.Data;
+using System.Diagnostics.Metrics;
 using System.Threading;
 using WebApi.Data.Interfaces;
 using WebApi.Models.DB;
+using WebApi.Models.Misc;
 using WebApi.Models.Request;
 using WebApi.Utilities.Interfaces;
 
@@ -110,6 +112,46 @@ namespace WebApi.Data.Implementatoins
                 }
 
                 return complaints;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<PagedList<Complaint>> GetAllComplaintsPaginatedAsync(int page, int pageSize)
+        {
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@p_page", page },
+                    { "@p_pageSize", pageSize }
+                };
+
+                using var reader = await _db.ExecuteReaderAsync("SELECT * FROM public.getallcomplaintspaginated(@p_page, @p_pageSize)", parameters);
+
+                var complaints = new List<Complaint>();
+                int totalCount = 0;
+
+                while (await reader.ReadAsync())
+                {
+                    complaints.Add(new Complaint
+                    {
+                        ComplaintId = reader.GetInt32(0),
+                        ConsumerId = reader.GetInt32(1),
+                        Title = reader.GetString(2),
+                        Description = reader.GetString(3),
+                        Status = reader.GetString(4),
+                        UpdatedAt = reader.GetDateTime(5)
+                    });
+
+                    if (totalCount == 0)
+                        totalCount = Convert.ToInt32(reader.GetInt64(6));
+                }
+
+                return PagedList<Complaint>.Create(complaints, page, pageSize, totalCount);
             }
             catch (Exception)
             {

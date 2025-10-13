@@ -1,4 +1,5 @@
 ﻿using WebApi.Models.DB;
+using WebApi.Models.Misc;
 using WebApi.Repositories.Implementations;
 using WebApi.Repositories.Interfaces;
 using WebApi.Services.Interfaces;
@@ -21,6 +22,21 @@ namespace WebApi.Services.Implementations
             var complaints = await _complaintRepository.GetAllComplaintsAsync();
 
             return complaints;
+        }
+
+        public async Task<PagedList<Complaint>> GetAllComplaintsPaginated(int page, int pageSize)
+        {
+            try
+            {
+                var complaints = await _complaintRepository.GetAllComplaintsPaginatedAsync(page, pageSize);
+
+                return complaints;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
