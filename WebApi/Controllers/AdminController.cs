@@ -53,7 +53,7 @@ namespace WebApi.Controllers
                 return Ok(new
                 {
                     items = pagedComplaints.Items,
-                    paginaiton = new
+                    pagination = new
                     {
                         page = pagedComplaints.Page,
                         pageSize = pagedComplaints.PageSize,

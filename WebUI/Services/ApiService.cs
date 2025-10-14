@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using WebUI.Models;
+using WebUI.Models.Pagination;
 using WebUI.Models.Request;
 using WebUI.Models.Response;
 
@@ -93,13 +94,13 @@ namespace WebUI.Services
             return null;
         }
 
-        public async Task<List<Complaint>?> GetAllComplaintsAdminAsync(string token)
+        public async Task<PagedResult<Complaint>?> GetAllComplaintsAdminAsync(string token, int page = 1, int pageSize = 10)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _httpClient.GetAsync($"{_baseUrl}/Admin/complaints");
+            var response = await _httpClient.GetAsync($"{_baseUrl}/Admin/complaints?Page={page}&PageSize={pageSize}");
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<List<Complaint>>();
+                return await response.Content.ReadFromJsonAsync<PagedResult<Complaint>>();
             }
             return null;
         }

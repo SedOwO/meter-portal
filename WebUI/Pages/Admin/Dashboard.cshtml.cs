@@ -43,8 +43,8 @@ namespace WebUI.Pages.Admin
                 var complaints = await _apiService.GetAllComplaintsAdminAsync(token);
                 var meters = await _apiService.GetAllMetersAdminAsync(token);
 
-                Stats.TotalComplaints = complaints?.Count ?? 0;
-                Stats.PendingComplaints = complaints?.Count(c => c.Status == "open") ?? 0;
+                Stats.TotalComplaints = complaints?.Items.Count ?? 0;
+                Stats.PendingComplaints = complaints?.Items.Count(c => c.Status == "open") ?? 0;
                 Stats.TotalMeters = meters?.Count ?? 0;
                 Stats.ActiveMeters = meters?.Count(m => m.Status == "active") ?? 0;
                 Stats.LowBalanceMeters = meters?.Count(m => m.BalanceAmount < 50) ?? 0;

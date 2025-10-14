@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebUI.Models;
+using WebUI.Models.Pagination;
 using WebUI.Services;
 
 namespace WebUI.Pages.Admin
@@ -9,7 +10,7 @@ namespace WebUI.Pages.Admin
     {
         private readonly IApiService _apiService;
 
-        public List<Complaint>? Complaints { get; set; }
+        public PagedResult<Complaint>? PagedComplaints { get; set; } = new();
         public string? SuccessMessage { get; set; }
         public string? ErrorMessage { get; set; }
 
@@ -18,6 +19,13 @@ namespace WebUI.Pages.Admin
 
         [BindProperty]
         public string Status { get; set; } = string.Empty;
+
+        // Pagination properties
+        [BindProperty(SupportsGet = true)]
+        public int CurrentPage { get; set; } = 1;
+
+        [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
 
         public ComplaintsModel(IApiService apiService)
         {
@@ -34,7 +42,11 @@ namespace WebUI.Pages.Admin
                 return RedirectToPage("/Auth/Login");
             }
 
-            Complaints = await _apiService.GetAllComplaintsAdminAsync(token);
+            PagedComplaints = await _apiService.GetAllComplaintsAdminAsync(token, CurrentPage, PageSize) ?? new();
+
+            Console.WriteLine($"Items Count: {PagedComplaints.Items?.Count ?? 0}");
+            Console.WriteLine($"Total Count: {PagedComplaints.Pagination?.TotalCount ?? 0}");
+            Console.WriteLine($"Page: {PagedComplaints.Pagination?.Page ?? 0}");
 
             return Page();
         }
@@ -65,7 +77,7 @@ namespace WebUI.Pages.Admin
                 ErrorMessage = "An error occurred while updating complaint.";
             }
 
-            Complaints = await _apiService.GetAllComplaintsAdminAsync(token);
+            PagedComplaints = await _apiService.GetAllComplaintsAdminAsync(token);
             return Page();
         }
     }

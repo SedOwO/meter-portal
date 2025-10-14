@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using WebUI.Models;
+using WebUI.Models.Pagination;
 using WebUI.Models.Request;
 using WebUI.Models.Response;
 
@@ -16,7 +17,8 @@ namespace WebUI.Services
         Task<bool> CreateComplaintAsync(string token, CreateComplaintRequest request);
 
         // Admin
-        Task<List<Complaint>?> GetAllComplaintsAdminAsync(string token);
+        Task<PagedResult<Complaint>?> GetAllComplaintsAdminAsync(string token, int page = 1, int pageSize = 10);
+
         Task<List<SmartMeter>?> GetAllMetersAdminAsync(string token);
 
         // Notifications
