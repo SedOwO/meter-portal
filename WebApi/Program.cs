@@ -91,6 +91,8 @@ builder.Services.AddScoped<IRechargeService, RechargeService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ISmartMeterService, SmartMeterService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IComplaintService, ComplaintService>();
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -15,6 +15,7 @@ namespace WebUI.Services
         Task<List<RechargeHistory>?> GetRechargeHistoryAsync(string token);
         Task<List<Complaint>?> GetComplaintsAsync(string token);
         Task<bool> CreateComplaintAsync(string token, CreateComplaintRequest request);
+        Task<bool> UpdateComplaintStatusAsync(string token, int complaintId, string status);
 
         // Admin
         Task<PagedResult<Complaint>?> GetAllComplaintsAdminAsync(string token, int page = 1, int pageSize = 10);

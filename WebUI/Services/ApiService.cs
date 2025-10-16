@@ -132,5 +132,20 @@ namespace WebUI.Services
             var response = await _httpClient.PutAsync($"{_baseUrl}/Consumer/notifications/{notificationId}", null);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<bool> UpdateComplaintStatusAsync(string token, int complaintId, string status)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var request = new ComplaintUpdateRequest
+            {
+                ComplaintId = complaintId,
+                Status = status
+            };
+
+            var response = await _httpClient.PutAsJsonAsync($"{_baseUrl}/Admin/updatecomplaint", request);
+
+            return response.IsSuccessStatusCode;
+        }
     }
 }

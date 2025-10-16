@@ -16,9 +16,11 @@ namespace WebApi.Controllers
     {
         private readonly IAdminService _adminService;
         private readonly ISmartMeterService _smartMeterService;
+        private readonly IComplaintService _complaintService;
 
-        public AdminController(IAdminService adminService, ISmartMeterService smartMeterService)
+        public AdminController(IAdminService adminService, ISmartMeterService smartMeterService, IComplaintService complaintService)
         {
+            _complaintService = complaintService;
             _adminService = adminService;
             _smartMeterService = smartMeterService;
         }
@@ -75,6 +77,51 @@ namespace WebApi.Controllers
                 });
             }
         }
+
+        [HttpPut("updatecomplaint")]
+        public async Task<IActionResult> UpdateComplaint([FromBody] ComplaintUpdateRequest complaint)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "Invalid user" });
+            }
+
+            try
+            {
+                var complaintResponse = await _complaintService.GetComplaintsByIdAsync(userId, complaint.ComplaintId);
+
+                if (complaintResponse == null)
+                {
+                    return NotFound("Complaint not found.");
+                }
+
+                var complaintRequest = new ComplaintRequest
+                {
+                    ConsumerId = complaintResponse.ConsumerId,
+                    Title = complaintResponse.Title,
+                    Description = complaintResponse.Description,
+                    Status = complaint.Status
+                };
+
+                var response = await _adminService.UpdateComplaintAsync(complaint.ComplaintId, complaintRequest);
+
+                return Ok(response);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while creating complaint", Detail = ex.Message });
+            }
+        }
+
 
         [HttpPost("smartmeters")]
         public async Task<IActionResult> CreateSmartMeter([FromBody] SmartMeterRequest meter)

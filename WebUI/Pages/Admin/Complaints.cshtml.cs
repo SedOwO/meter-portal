@@ -44,10 +44,6 @@ namespace WebUI.Pages.Admin
 
             PagedComplaints = await _apiService.GetAllComplaintsAdminAsync(token, CurrentPage, PageSize) ?? new();
 
-            Console.WriteLine($"Items Count: {PagedComplaints.Items?.Count ?? 0}");
-            Console.WriteLine($"Total Count: {PagedComplaints.Pagination?.TotalCount ?? 0}");
-            Console.WriteLine($"Page: {PagedComplaints.Pagination?.Page ?? 0}");
-
             return Page();
         }
 
@@ -61,16 +57,16 @@ namespace WebUI.Pages.Admin
 
             try
             {
-                //var success = await _apiService.UpdateComplaintStatusAsync(token, ComplaintId, Status);
+                var success = await _apiService.UpdateComplaintStatusAsync(token, ComplaintId, Status);
 
-                //if (success)
-                //{
-                //    SuccessMessage = "Complaint status updated successfully!";
-                //}
-                //else
-                //{
-                //    ErrorMessage = "Failed to update complaint status.";
-                //}
+                if (success)
+                {
+                    SuccessMessage = "Complaint status updated successfully!";
+                }
+                else
+                {
+                    ErrorMessage = "Failed to update complaint status.";
+                }
             }
             catch (Exception)
             {
